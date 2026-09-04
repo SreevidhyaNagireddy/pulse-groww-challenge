@@ -1,0 +1,98 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String      @id @default(uuid())
+  sessionId   String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  watchlists  Watchlist[]
+}
+
+model Watchlist {
+  id          String          @id @default(uuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String          @default("My Watchlist")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  items       WatchlistItem[]
+  checkpoints Checkpoint[]
+}
+
+model WatchlistItem {
+  id          String    @id @default(uuid())
+  watchlistId String
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  symbol      String    // e.g. RELIANCE, TCS, INFY
+  nseSymbol   String    // e.g. RELIANCE.NS
+  name        String
+  displayOrder Int      @default(0)
+  createdAt   DateTime  @default(now())
+
+  @@unique([watchlistId, symbol])
+}
+
+model MarketSnapshot {
+  id            String   @id @default(uuid())
+  symbol        String   @unique
+  name          String
+  price         Float
+  change        Float
+  changePercent Float
+  previousClose Float
+  open          Float?
+  dayHigh       Float?
+  dayLow        Float?
+  volume        Float?
+  avgVolume     Float?
+  high52        Float?
+  low52         Float?
+  timestamp     DateTime @default(now())
+  provider      String   @default("YAHOO") // YAHOO, SIMULATED, FALLBACK
+  freshness     String   @default("LIVE")  // LIVE, RECENT, STALE, UNAVAILABLE, SIMULATED
+}
+
+// Append-only history table for price charts and historical delta tracking
+model MarketSnapshotHistory {
+  id            String   @id @default(uuid())
+  symbol        String
+  price         Float
+  change        Float
+  changePercent Float
+  volume        Float?
+  timestamp     DateTime @default(now())
+  provider      String   @default("YAHOO")
+
+  @@index([symbol, timestamp])
+}
+
+model Checkpoint {
+  id           String    @id @default(uuid())
+  watchlistId  String
+  watchlist    Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  snapshotData String    // JSON serialized baseline stock quotes
+}
+
+model MeaningfulEvent {
+  id            String   @id @default(uuid())
+  symbol        String
+  eventType     String   // PRICE_MOVE, LARGE_MOVE, VOLUME_SPIKE, HIGH_LOW_EXTREME, GAP_OPEN
+  severity      String   // INFO, WARNING, CRITICAL
+  title         String
+  description   String
+  priceThen     Float
+  priceNow      Float
+  changePercent Float
+  scoreImpact   Int
+  timestamp     DateTime @default(now())
+
+  @@index([symbol, timestamp])
+}
