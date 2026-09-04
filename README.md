@@ -1,4 +1,19 @@
 # Pulse — Know What Changed.
+# Pulse — Know What Changed.
+
+> **Smart Market Watchlist for Indian Equities**
+
+> Built for the **Groww CODE 2026 Challenge** by **Sree Vidhya Nagireddy**.
+
+---
+
+## Product Pitch
+
+Pulse is a smart market watchlist for Indian equities that answers a simple question: “What meaningfully changed since I last checked, and why should I care?” Users create a baseline checkpoint, return later, and instantly see stocks that crossed transparent thresholds for price movement, volume spikes, 52-week extremes, or opening gaps. Each stock receives an explainable 0–100 attention score with plain-language reasons instead of opaque predictions. I designed Pulse around deterministic rules, real-time market data, PostgreSQL persistence, and a resilient provider layer with automatic fallback handling. This keeps the experience fast, reliable, transparent, and useful without providing financial advice or predictions.
+
+---
+
+## 1. What Pulse Does
 
 > **Smart Market Watchlist for Indian Equities**  
 > Built for the **Groww CODE 2026 Challenge** by **Sree Vidhya Nagireddy**.
