@@ -122,8 +122,8 @@ Pulse monitors Indian Standard Time (IST):
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone <repo-url>
-cd Groww_project
+git clone https://github.com/SreevidhyaNagireddy/pulse-groww-challenge.git
+cd pulse-groww-challenge
 npm install
 ```
 
